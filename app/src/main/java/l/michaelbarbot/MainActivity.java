@@ -1,9 +1,6 @@
 package l.michaelbarbot;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +8,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button drink1;
@@ -95,9 +93,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void submit(View view) {
         // check if there is a selection
-        // send drink order to robot
-        // bring up a flag that says the order was submitted?
-        // switch to a waiting screen with animation of the robot pouring the drink?
+        if (selectedDrink.equals("")) {
+            // post a flag saying "Please select a drink"
+            Toast toast = Toast.makeText(this, "Please select a drink.",
+                    Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            // send drink order to robot
+            // bring up a flag that says the order was submitted?
+            // switch to a waiting screen with animation of the robot pouring the drink?
             // until the drink is prepared?
+        }
     }
 }
