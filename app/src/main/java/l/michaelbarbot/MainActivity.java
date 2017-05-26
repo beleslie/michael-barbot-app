@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+// ROS imports
+import org.ros.android.RosActivity;
+
 public class MainActivity extends AppCompatActivity {
     private Button drink1;
     private Button drink2;
@@ -94,15 +97,15 @@ public class MainActivity extends AppCompatActivity {
     public void submit(View view) {
         // check if there is a selection
         if (selectedDrink.equals("")) {
-            // post a flag saying "Please select a drink"
+            // raise a flag saying "Please select a drink"
             Toast toast = Toast.makeText(this, "Please select a drink.",
                     Toast.LENGTH_SHORT);
             toast.show();
         } else {
             // send drink order to robot
             // bring up a flag that says the order was submitted?
-            // switch to a waiting screen with animation of the robot pouring the drink?
-            // until the drink is prepared?
+            // switch to a waiting screen with animation of the robot pouring the drink
+                // until the drink is prepared?
         }
     }
 }
