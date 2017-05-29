@@ -67,22 +67,12 @@
         android:onClick="selectDrink"/>
 
     <TextView
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_centerVertical="true"
-        android:text=""
-        android:background="@color/gray"
-        android:layout_below="@+id/drink2_button"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"/>
-
-    <TextView
         android:id="@+id/size_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/divider"
+        android:layout_below="@+id/drink2_button"
         android:text="@string/size_header"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
