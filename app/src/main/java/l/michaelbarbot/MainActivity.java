@@ -105,6 +105,10 @@ public class MainActivity extends RosActivity {
         }
     }
 
+    public void selectSize(View view) {
+
+    }
+
     public void submit(View view) {
         // check if there is a selection
         if (selectedDrink.equals("")) {
