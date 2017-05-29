@@ -2,7 +2,6 @@ package l.michaelbarbot;
 
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -12,19 +11,31 @@ import android.widget.Toast;
 
 // ROS imports
 import org.ros.android.RosActivity;
+import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMainExecutor;
 
-public class MainActivity extends AppCompatActivity {
+import java.net.URI;
+
+public class MainActivity extends RosActivity {
     private Button drink1;
     private Button drink2;
     private Button drink3;
     private String selectedDrink;
+
+    private Button submit;
+
+    public MainActivity() {
+        // The RosActivity constructor configures the notification title and ticker
+        // messages.
+        super("Pubsub Tutorial", "Pubsub Tutorial" /*, URI.create("http://localhost:11311")*/);   // TODO: change
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
         // initialize the drink buttons
         drink1 = (Button) findViewById(R.id.drink1_button);
@@ -101,11 +112,35 @@ public class MainActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(this, "Please select a drink.",
                     Toast.LENGTH_SHORT);
             toast.show();
-        } else {
+        } else {                                                    // TODO: implement
             // send drink order to robot
             // bring up a flag that says the order was submitted?
             // switch to a waiting screen with animation of the robot pouring the drink
                 // until the drink is prepared?
         }
+    }
+
+    @Override
+    protected void init(NodeMainExecutor nodeMainExecutor) {
+        // TODO: figure out what to pass into these methods
+        NodeConfiguration nodeConfiguration =
+                NodeConfiguration.newPublic(getRosHostname());  // pass in the host that the node will run on
+        // InetAddressFactory.newNonLoopback().getHostAddress()
+        nodeConfiguration.setMasterUri(getMasterUri());     // URI for robot
+        // nodeMainExecutor.execute(submit, nodeConfiguration);
+
+        /*
+        // At this point, the user has already been prompted to either enter the URI
+        // of a master to use or to start a master locally.
+
+        // The user can easily use the selected ROS Hostname in the master chooser
+        // activity.
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
+        nodeConfiguration.setMasterUri(getMasterUri());
+        nodeMainExecutor.execute(talker, nodeConfiguration);
+        // The RosTextView is also a NodeMain that must be executed in order to
+        // start displaying incoming messages.
+        nodeMainExecutor.execute(rosTextView, nodeConfiguration);
+        */
     }
 }
