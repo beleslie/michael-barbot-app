@@ -2,6 +2,7 @@ package l.michaelbarbot;
 
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -16,19 +17,28 @@ import org.ros.node.NodeMainExecutor;
 
 import java.net.URI;
 
-public class MainActivity extends RosActivity {
+public class MainActivity extends AppCompatActivity {
     private Button drink1;
     private Button drink2;
-    private Button drink3;
+    private Button size1;
+    private Button size2;
+    private Button size3;
     private String selectedDrink;
+    private String selectedSize;
 
     private Button submit;
 
+    private int blue;
+    private int white;
+    private int gray;
+
+    /*
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
         // messages.
-        super("Pubsub Tutorial", "Pubsub Tutorial" /*, URI.create("http://localhost:11311")*/);   // TODO: change
+        super("Pubsub Tutorial", "Pubsub Tutorial", URI.create("http://localhost:11311"));   // TODO: change
     }
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +50,22 @@ public class MainActivity extends RosActivity {
         // initialize the drink buttons
         drink1 = (Button) findViewById(R.id.drink1_button);
         drink2 = (Button) findViewById(R.id.drink2_button);
-        drink3 = (Button) findViewById(R.id.drink3_button);
+
+        // initialize the size buttons
+        size1 = (Button) findViewById(R.id.size1_button);
+        size2 = (Button) findViewById(R.id.size2_button);
+        size3 = (Button) findViewById(R.id.size3_button);
 
         // initialize the selected drink
         selectedDrink = "";
+
+        // initialize the selected size
+        selectedSize = "";
+
+        // define color values
+        blue = ResourcesCompat.getColor(getResources(), R.color.blue, null);
+        white = ResourcesCompat.getColor(getResources(), R.color.white, null);
+        gray = ResourcesCompat.getColor(getResources(), R.color.gray, null);
     }
 
     @Override
@@ -69,11 +91,6 @@ public class MainActivity extends RosActivity {
     }
 
     public void selectDrink(View view) {
-        // define color values
-        int blue = ResourcesCompat.getColor(getResources(), R.color.blue, null);
-        int white = ResourcesCompat.getColor(getResources(), R.color.white, null);
-        int gray = ResourcesCompat.getColor(getResources(), R.color.gray, null);
-
         // get selected drink
         Button button = (Button) view;
         String newSelection = button.getText().toString();
@@ -96,8 +113,6 @@ public class MainActivity extends RosActivity {
             drink1.setTextColor(gray);
             drink2.setBackgroundColor(white);
             drink2.setTextColor(gray);
-            drink3.setBackgroundColor(white);
-            drink3.setTextColor(gray);
 
             // color selected button blue
             button.setBackgroundColor(blue);
@@ -106,17 +121,49 @@ public class MainActivity extends RosActivity {
     }
 
     public void selectSize(View view) {
+        // get selected size
+        Button button = (Button) view;
+        String newSelection = button.getText().toString();
 
+        // check if size already selected
+        if (selectedSize.equals(newSelection)) {
+            // color the button white
+            button.setBackgroundColor(white);
+            button.setTextColor(gray);
+
+            // remove selection
+            selectedSize = "";
+
+        } else {
+            // set selected drink to new selection
+            selectedSize = newSelection;
+
+            // color all buttons white (instead of figuring out which was most recently colored blue)
+            size1.setBackgroundColor(white);
+            size1.setTextColor(gray);
+            size2.setBackgroundColor(white);
+            size2.setTextColor(gray);
+            size3.setBackgroundColor(white);
+            size3.setTextColor(gray);
+
+            // color selected button blue
+            button.setBackgroundColor(blue);
+            button.setTextColor(white);
+        }
     }
 
     public void submit(View view) {
         // check if there is a selection
         if (selectedDrink.equals("")) {
             // raise a flag saying "Please select a drink"
-            Toast toast = Toast.makeText(this, "Please select a drink.",
-                    Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, "Please select a drink.", Toast.LENGTH_SHORT);
             toast.show();
-        } else {                                                    // TODO: implement
+        } else if (selectedSize.equals("")) {
+            // raise a flag saying "Please select a size"
+            Toast toast = Toast.makeText(this, "Please select a size.", Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            // TODO: implement
             // send drink order to robot
             // bring up a flag that says the order was submitted?
             // switch to a waiting screen with animation of the robot pouring the drink
@@ -124,6 +171,7 @@ public class MainActivity extends RosActivity {
         }
     }
 
+    /*
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
         // TODO: figure out what to pass into these methods
@@ -145,6 +193,7 @@ public class MainActivity extends RosActivity {
         // The RosTextView is also a NodeMain that must be executed in order to
         // start displaying incoming messages.
         nodeMainExecutor.execute(rosTextView, nodeConfiguration);
-        */
+
     }
+    */
 }
