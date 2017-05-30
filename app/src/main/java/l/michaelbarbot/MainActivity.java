@@ -2,7 +2,6 @@ package l.michaelbarbot;
 
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -11,13 +10,14 @@ import android.widget.Button;
 import android.widget.Toast;
 
 // ROS imports
+import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
 import java.net.URI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends RosActivity {
     private Button drink1;
     private Button drink2;
     private Button size1;
@@ -32,13 +32,16 @@ public class MainActivity extends AppCompatActivity {
     private int white;
     private int gray;
 
-    /*
+    // ROS nodes
+    private DrinkTalker drinkTalker;
+    private DrinkListener drinkListener;
+
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker
         // messages.
-        super("Pubsub Tutorial", "Pubsub Tutorial", URI.create("http://localhost:11311"));   // TODO: change
+        super("Michael the BarBot", "Michael the BarBot",
+                URI.create("robonaut.cs.washington.edu:90"));   // TODO: change
     }
-    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,15 +174,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
         // TODO: figure out what to pass into these methods
+
+        // initialize the publisher and subscriber nodes
+        drinkTalker = new DrinkTalker();
+        drinkListener = new DrinkListener();
+
+        // set up the node configuration crap
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
+        InetAddressFactory.newNonLoopback().getHostAddress());
+        nodeConfiguration.setMasterUri(getMasterUri());
+
+        // execute the nodes
+        nodeMainExecutor.execute(drinkTalker, nodeConfiguration);
+        nodeMainExecutor.execute(drinkListener, nodeConfiguration);
+
+        /*
         NodeConfiguration nodeConfiguration =
                 NodeConfiguration.newPublic(getRosHostname());  // pass in the host that the node will run on
         // InetAddressFactory.newNonLoopback().getHostAddress()
-        nodeConfiguration.setMasterUri(getMasterUri());     // URI for robot
+        nodeConfiguration.setMasterUri(getMasterUri());// URI for robot
         // nodeMainExecutor.execute(submit, nodeConfiguration);
+        */
 
         /*
         // At this point, the user has already been prompted to either enter the URI
@@ -193,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
         // The RosTextView is also a NodeMain that must be executed in order to
         // start displaying incoming messages.
         nodeMainExecutor.execute(rosTextView, nodeConfiguration);
-
+        */
     }
-    */
 }
