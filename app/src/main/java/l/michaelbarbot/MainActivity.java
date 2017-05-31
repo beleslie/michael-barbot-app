@@ -184,7 +184,7 @@ public class MainActivity extends RosActivity {
 
         // set up the node configuration crap
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
-        InetAddressFactory.newNonLoopback().getHostAddress());
+                InetAddressFactory.newNonLoopback().getHostAddress());
         nodeConfiguration.setMasterUri(getMasterUri());
 
         // execute the nodes
