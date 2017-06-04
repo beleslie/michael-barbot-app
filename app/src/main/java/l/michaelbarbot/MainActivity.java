@@ -168,9 +168,13 @@ public class MainActivity extends RosActivity {
         } else {
             // TODO: implement
             // send drink order to robot
-            // bring up a flag that says the order was submitted?
-            // switch to a waiting screen with animation of the robot pouring the drink
-                // until the drink is prepared?
+            if (drinkTalker.orderDrink(selectedDrink, selectedSize)) {
+                // bring up a flag that says the order was submitted
+            } else {
+                // bring up a flag with an error message
+            }
+
+
         }
     }
 

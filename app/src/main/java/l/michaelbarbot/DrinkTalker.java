@@ -7,7 +7,8 @@ import org.ros.node.Node;
 import org.ros.node.NodeMain;
 import org.ros.node.topic.Publisher;
 
-import std_msgs.String;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by lesli_000 on 5/30/2017.
@@ -15,8 +16,10 @@ import std_msgs.String;
 
 public class DrinkTalker implements NodeMain {
     private java.lang.String name;
+    private Queue<DrinkOrder> queue;
 
     public DrinkTalker() {
+        queue = new ConcurrentLinkedQueue<>();
         name = "/drink_order";
     }
 
@@ -28,25 +31,42 @@ public class DrinkTalker implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         // set up the publisher
+        final Publisher<std_msgs.String> publisher =
+                connectedNode.newPublisher(name, "std_msgs.String");
 
-        final Publisher<DrinkOrder> publisher =
-                connectedNode.newPublisher(name, DrinkOrder);
         // This CancellableLoop will be canceled automatically when the node shuts down.
         connectedNode.executeCancellableLoop(new CancellableLoop() {
-            private int sequenceNumber;
 
             @Override
             protected void setup() {
-                sequenceNumber = 0;
+
             }
 
             @Override
             protected void loop() throws InterruptedException {
-                std_msgs.String str = publisher.newMessage();
-                str.setData("Hello world! " + sequenceNumber);
-                publisher.publish(str);
-                sequenceNumber++;
-                Thread.sleep(1000);
+                if (!queue.isEmpty()) {
+                    DrinkOrder order = queue.remove();
+
+                    // publish the command
+                    std_msgs.String command = publisher.newMessage();
+                    command.setData(order.getCommand());
+                    publisher.publish(command);
+
+                    // publish the id
+                    std_msgs.String id = publisher.newMessage();
+                    id.setData(order.getId());
+                    publisher.publish(id);
+
+                    // publish the type
+                    std_msgs.String type = publisher.newMessage();
+                    type.setData(order.getType());
+                    publisher.publish(type);
+
+                    // publish the amount
+                    std_msgs.String amount = publisher.newMessage();
+                    amount.setData(order.getAmount());
+                    publisher.publish(amount);
+                }
             }
         });
     }
@@ -64,5 +84,9 @@ public class DrinkTalker implements NodeMain {
     @Override
     public void onError(Node node, Throwable throwable) {
 
+    }
+
+    public boolean orderDrink(java.lang.String type, java.lang.String amount) {
+        return queue.add(new DrinkOrder(type, amount));
     }
 }

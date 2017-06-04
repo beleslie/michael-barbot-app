@@ -25,16 +25,15 @@ public class DrinkListener implements NodeMain {
     @Override
     public void onStart(ConnectedNode connectedNode) {
         // set up the subscriber
+        final Subscriber<std_msgs.Int64> subscriber =
+                connectedNode.newSubscriber(name, "std_msgs.Int64");
 
-        final Subscriber<DrinkStatus> subscriber =
-                connectedNode.newPublisher(name, DrinkStatus);
         // This CancellableLoop will be canceled automatically when the node shuts down.
         connectedNode.executeCancellableLoop(new CancellableLoop() {
-            private int sequenceNumber;
 
             @Override
             protected void setup() {
-                sequenceNumber = 0;
+
             }
 
             @Override
@@ -50,6 +49,17 @@ public class DrinkListener implements NodeMain {
                 */
             }
         });
+
+        /*
+        final Log log = connectedNode.getLog();
+        Subscriber<std_msgs.String> subscriber = connectedNode.newSubscriber("chatter", std_msgs.String._TYPE);
+        subscriber.addMessageListener(new MessageListener<std_msgs.String>() {
+            @Override
+            public void onNewMessage(std_msgs.String message) {
+                log.info("I heard: \"" + message.getData() + "\"");
+            }
+        });
+        */
     }
 
     @Override
