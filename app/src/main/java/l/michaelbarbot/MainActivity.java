@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 // ROS imports
-import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
@@ -25,8 +24,8 @@ public class MainActivity extends RosActivity {
     private Button size1;
     private Button size2;
     private Button size3;
-    private String selectedDrink;
-    private String selectedSize;
+    private Button selectedDrink;
+    private Button selectedSize;
 
     private Button submit;
 
@@ -68,10 +67,10 @@ public class MainActivity extends RosActivity {
         submit = (Button) findViewById(R.id.submit_button);
 
         // initialize the selected drink
-        selectedDrink = "";
+        selectedDrink = null;
 
         // initialize the selected size
-        selectedSize = "";
+        selectedSize = null;
 
         // define color values
         blue = ResourcesCompat.getColor(getResources(), R.color.blue, null);
@@ -103,73 +102,69 @@ public class MainActivity extends RosActivity {
 
     public void selectDrink(View view) {
         // get selected drink
-        Button button = (Button) view;
-        String newSelection = button.getText().toString();
+        Button newSelection = (Button) view;
 
         // check if drink already selected
-        if (selectedDrink.equals(newSelection)) {
+        if (selectedDrink != null && selectedDrink.equals(newSelection)) {
             // color the button white
-            button.setBackgroundColor(white);
-            button.setTextColor(gray);
+            selectedDrink.setBackgroundColor(white);
+            selectedDrink.setTextColor(gray);
 
             // remove selection
-            selectedDrink = "";
+            selectedDrink = null;
 
         } else {
+            // color previously selected drink white
+            if (selectedDrink != null) {
+                selectedDrink.setBackgroundColor(white);
+                selectedDrink.setTextColor(gray);
+            }
+
             // set selected drink to new selection
             selectedDrink = newSelection;
 
-            // color all buttons white (instead of figuring out which was most recently colored blue)
-            drink1.setBackgroundColor(white);
-            drink1.setTextColor(gray);
-            drink2.setBackgroundColor(white);
-            drink2.setTextColor(gray);
-
             // color selected button blue
-            button.setBackgroundColor(blue);
-            button.setTextColor(white);
+            selectedDrink.setBackgroundColor(blue);
+            selectedDrink.setTextColor(white);
         }
     }
 
     public void selectSize(View view) {
         // get selected size
-        Button button = (Button) view;
-        String newSelection = button.getText().toString();
+        Button newSelection = (Button) view;
 
         // check if size already selected
-        if (selectedSize.equals(newSelection)) {
+        if (selectedSize != null && selectedSize.equals(newSelection)) {
             // color the button white
-            button.setBackgroundColor(white);
-            button.setTextColor(gray);
+            selectedSize.setBackgroundColor(white);
+            selectedSize.setTextColor(gray);
 
             // remove selection
-            selectedSize = "";
+            selectedSize = null;
 
         } else {
+            // color previously selected size white and gray
+            if (selectedSize != null) {
+                selectedSize.setBackgroundColor(white);
+                selectedSize.setTextColor(gray);
+            }
+
             // set selected drink to new selection
             selectedSize = newSelection;
 
-            // color all buttons white (instead of figuring out which was most recently colored blue)
-            size1.setBackgroundColor(white);
-            size1.setTextColor(gray);
-            size2.setBackgroundColor(white);
-            size2.setTextColor(gray);
-            size3.setBackgroundColor(white);
-            size3.setTextColor(gray);
-
             // color selected button blue
-            button.setBackgroundColor(blue);
-            button.setTextColor(white);
+            selectedSize.setBackgroundColor(blue);
+            selectedSize.setTextColor(white);
         }
     }
 
     public void submit(View view) {
         // check if there is a selection
-        if (selectedDrink.equals("")) {
+        if (selectedDrink == null) {
             // raise a flag saying "Please select a drink"
             Toast toast = Toast.makeText(this, "Please select a drink.", Toast.LENGTH_SHORT);
             toast.show();
-        } else if (selectedSize.equals("")) {
+        } else if (selectedSize == null) {
             // raise a flag saying "Please select a size"
             Toast toast = Toast.makeText(this, "Please select a size.", Toast.LENGTH_SHORT);
             toast.show();
@@ -177,7 +172,8 @@ public class MainActivity extends RosActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             // send drink order to robot and set dialog message
-            if (drinkTalker.orderDrink(selectedDrink, selectedSize)) {
+            if (drinkTalker.orderDrink(selectedDrink.getText().toString(),
+                    selectedSize.getText().toString())) {
                 // bring up a flag that says the order was submitted
                 builder.setMessage(R.string.submit_message).setTitle(R.string.submit_title);
             } else {
