@@ -37,10 +37,8 @@ public class MainActivity extends RosActivity {
     private DrinkTalker drinkTalker;
     private DrinkListener drinkListener;
 
-    private static final String hostName = "128.208.1.207";
-    private static final String masterURI = "http://robonaut.cs.washington.edu:9090";
-    // "128.208.1.207"
-    // "http://robonaut.cs.washington.edu:11311";
+    private static final String hostName = "robonaut.cs.washington.edu";
+    private static final String masterURI = "http://robonaut.cs.washington.edu:11311";
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker messages.
@@ -209,7 +207,7 @@ public class MainActivity extends RosActivity {
 
         try {
             // set up the node configuration
-            NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(hostName); // TODO: figure out host
+            NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(hostName);
             nodeConfiguration.setMasterUri(getMasterUri());
 
             // execute the nodes
