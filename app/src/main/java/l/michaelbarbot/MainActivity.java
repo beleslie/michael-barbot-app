@@ -1,5 +1,7 @@
 package l.michaelbarbot;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
@@ -36,11 +38,16 @@ public class MainActivity extends RosActivity {
     private DrinkTalker drinkTalker;
     private DrinkListener drinkListener;
 
+    private static final String masterURI = "ws://robonaut.cs.washington.edu:9090";
+
     public MainActivity() {
-        // The RosActivity constructor configures the notification title and ticker
-        // messages.
-        super("Michael the BarBot", "Michael the BarBot",
-                URI.create("robonaut.cs.washington.edu:90"));   // TODO: change
+        // The RosActivity constructor configures the notification title and ticker messages.
+        super("Michael the BarBot", "Michael the BarBot");
+    }
+
+    @Override
+    public void startMasterChooser() {
+        super.startMasterChooser();
     }
 
     @Override
@@ -166,55 +173,64 @@ public class MainActivity extends RosActivity {
             Toast toast = Toast.makeText(this, "Please select a size.", Toast.LENGTH_SHORT);
             toast.show();
         } else {
-            // TODO: implement
-            // send drink order to robot
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // send drink order to robot and set dialog message
             if (drinkTalker.orderDrink(selectedDrink, selectedSize)) {
                 // bring up a flag that says the order was submitted
+                builder.setMessage(R.string.submit_message).setTitle(R.string.submit_title);
             } else {
                 // bring up a flag with an error message
+                builder.setMessage(R.string.submit_error_message).setTitle(R.string.submit_error_title);
             }
 
-
+            // finish building and display the dialog
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
     }
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
-        // TODO: figure out what to pass into these methods
-
         // initialize the publisher and subscriber nodes
         drinkTalker = new DrinkTalker();
         drinkListener = new DrinkListener();
 
-        // set up the node configuration crap
-        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
-                InetAddressFactory.newNonLoopback().getHostAddress());
-        nodeConfiguration.setMasterUri(getMasterUri());
+        try {
+            URI master = URI.create(masterURI);
 
-        // execute the nodes
-        nodeMainExecutor.execute(drinkTalker, nodeConfiguration);
-        nodeMainExecutor.execute(drinkListener, nodeConfiguration);
+            // set up the node configuration
+            NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
+                    getRosHostname()); // TODO: figure out host
+            nodeConfiguration.setMasterUri(master);
 
-        /*
-        NodeConfiguration nodeConfiguration =
-                NodeConfiguration.newPublic(getRosHostname());  // pass in the host that the node will run on
-        // InetAddressFactory.newNonLoopback().getHostAddress()
-        nodeConfiguration.setMasterUri(getMasterUri());// URI for robot
-        // nodeMainExecutor.execute(submit, nodeConfiguration);
-        */
+            // execute the nodes
+            nodeMainExecutor.execute(drinkTalker, nodeConfiguration);
+            nodeMainExecutor.execute(drinkListener, nodeConfiguration);
+        } catch (Exception e) {
+            // post message saying drink orders cannot be submitted right now
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.ros_error_message).setTitle(R.string.ros_error_title);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked OK button
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-        /*
-        // At this point, the user has already been prompted to either enter the URI
-        // of a master to use or to start a master locally.
-
-        // The user can easily use the selected ROS Hostname in the master chooser
-        // activity.
-        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
-        nodeConfiguration.setMasterUri(getMasterUri());
-        nodeMainExecutor.execute(talker, nodeConfiguration);
-        // The RosTextView is also a NodeMain that must be executed in order to
-        // start displaying incoming messages.
-        nodeMainExecutor.execute(rosTextView, nodeConfiguration);
-        */
+            // make all buttons unclickable
+            drink1.setClickable(false);
+            drink2.setClickable(false);
+            size1.setClickable(false);
+            size2.setClickable(false);
+            size3.setClickable(false);
+            submit.setClickable(false);
+        }
     }
 }

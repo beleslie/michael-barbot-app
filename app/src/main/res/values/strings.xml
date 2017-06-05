@@ -10,4 +10,13 @@
     <string name="size2">12 oz</string>
     <string name="size3">24 oz</string>
     <string name="submit">Submit Order</string>
+
+    <string name="submit_title">Thank You</string>
+    <string name="submit_message">Your order has been submitted!</string>
+    <string name="submit_error_title">Error</string>
+    <string name="submit_error_message">Your order has not been submitted. Please try again.</string>
+    <string name="ok">Ok</string>
+
+    <string name="ros_error_title">Error</string>
+    <string name="ros_error_message">The connection to the robot has failed. Please try again.</string>
 </resources>
