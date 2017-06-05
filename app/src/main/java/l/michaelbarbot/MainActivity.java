@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 // ROS imports
-import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
@@ -42,12 +41,7 @@ public class MainActivity extends RosActivity {
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker messages.
-        super("Michael the BarBot", "Michael the BarBot");
-    }
-
-    @Override
-    public void startMasterChooser() {
-        super.startMasterChooser();
+        super("Michael the BarBot", "Michael the BarBot", URI.create(masterURI));
     }
 
     @Override
@@ -65,6 +59,9 @@ public class MainActivity extends RosActivity {
         size1 = (Button) findViewById(R.id.size1_button);
         size2 = (Button) findViewById(R.id.size2_button);
         size3 = (Button) findViewById(R.id.size3_button);
+
+        // initialize the submit button
+        submit = (Button) findViewById(R.id.submit_button);
 
         // initialize the selected drink
         selectedDrink = "";
@@ -202,12 +199,10 @@ public class MainActivity extends RosActivity {
         drinkListener = new DrinkListener();
 
         try {
-            URI master = URI.create(masterURI);
-
             // set up the node configuration
             NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
                     getRosHostname()); // TODO: figure out host
-            nodeConfiguration.setMasterUri(master);
+            nodeConfiguration.setMasterUri(getMasterUri());
 
             // execute the nodes
             nodeMainExecutor.execute(drinkTalker, nodeConfiguration);
