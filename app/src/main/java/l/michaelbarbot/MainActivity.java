@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 // ROS imports
+import org.ros.address.InetAddressFactory;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
@@ -37,11 +38,12 @@ public class MainActivity extends RosActivity {
     private DrinkTalker drinkTalker;
     private DrinkListener drinkListener;
 
-    private static final String masterURI = "ws://robonaut.cs.washington.edu:9090";
+    private static final String hostName = "http://robonaut.cs.washington.edu:9090";
+    // "128.208.1.207"
 
     public MainActivity() {
         // The RosActivity constructor configures the notification title and ticker messages.
-        super("Michael the BarBot", "Michael the BarBot", URI.create(masterURI));
+        super("Michael the BarBot", "Michael the BarBot", URI.create(hostName));
     }
 
     @Override
@@ -196,17 +198,17 @@ public class MainActivity extends RosActivity {
     protected void init(NodeMainExecutor nodeMainExecutor) {
         // initialize the publisher and subscriber nodes
         drinkTalker = new DrinkTalker();
-        drinkListener = new DrinkListener();
+        // drinkListener = new DrinkListener();
 
         try {
             // set up the node configuration
-            NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(
-                    getRosHostname()); // TODO: figure out host
+            NodeConfiguration nodeConfiguration =
+                    NodeConfiguration.newPublic(getRosHostname()); // TODO: figure out host
             nodeConfiguration.setMasterUri(getMasterUri());
 
             // execute the nodes
             nodeMainExecutor.execute(drinkTalker, nodeConfiguration);
-            nodeMainExecutor.execute(drinkListener, nodeConfiguration);
+            // nodeMainExecutor.execute(drinkListener, nodeConfiguration);
         } catch (Exception e) {
             // post message saying drink orders cannot be submitted right now
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="l.michaelbarbot">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         tools:replace="android:icon"
         android:allowBackup="true"
