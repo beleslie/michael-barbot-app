@@ -189,6 +189,15 @@ public class MainActivity extends RosActivity {
             });
             AlertDialog dialog = builder.create();
             dialog.show();
+
+            // clear the selections
+            selectedDrink.setBackgroundColor(white);
+            selectedDrink.setTextColor(gray);
+            selectedDrink = null;
+
+            selectedSize.setBackgroundColor(white);
+            selectedSize.setTextColor(gray);
+            selectedSize = null;
         }
     }
 
